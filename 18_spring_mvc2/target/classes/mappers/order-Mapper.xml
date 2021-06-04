@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- mapper xml 파일임을 명시하기 위한 DTD 선언 (구글 검색 및 마이바티스 공식 홈페이지에서 참조할 수 있다.) -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="order">
+	
+	<!-- 		
+		
+	  	${값}  , #{값}
+	
+		- 전달 받은 데이터를 쿼리문에서 ${값}  , #{값}과 같은 형태로 사용된다.
+		- 주로 #{값} 형태(preparedStatement)를 사용하며 이 형태를 권장한다.
+		- 대소문자를 구분한다.
+		
+	-->
+	
+	<!--  
+
+		 동적 쿼리문
+	
+		- JSTL과 같이 <if> <when> <otherwise>를 사용하여 쿼리를 동적으로 사용할 수 있다. 
+		
+		- '' , "" 모두 사용 가능하다.  	
+			예시) 
+				<when test = '조건식'>
+				<when test = "조건식" > 
+		
+		- (자주 실수하는 부분1) 조건식에서 연산자 사용시 && || 대신에 and , or 를 사용해야 한다.
+		- (자주 실수하는 부분2) JSTL과 구문이 굉장히 비슷하여 JSTL형태로 Mybatis에서 작성하는 경우
+			
+			예시)
+				       			 JSTL				    MyBatis 
+			표기법 		:    	${}				/	     #{}
+			if    		:  		<c:if>			/		 <if>
+			choose		:  		<c:choose>  	/	   <choose>
+			when		: 		<c:when>	 	/ 		 <when>
+			otherwise 	: 		<c:otherwise> 	/ 	   <otherwise>		
+			foreach		:		<c:forEach>		/	 	<foreach>
+	-->
+		
+	<insert id="insertOneData" parameterType="String">
+		INSERT INTO T_ORDER_LIST(
+				PRODUCT_CODE,
+				PRODUCT_NAME)
+		VALUES(
+			<choose>
+				<when test='productName.equals("기계식키보드")'>
+					"0x001"
+				</when>
+				<when test='productName.equals("무소음 마우스")'>
+					"0x002"
+				</when>
+				<when test='productName.equals("장패드")'>
+					"0x003"
+				</when>
+				<otherwise>
+					"없음"
+				</otherwise>
+			</choose>, 
+				#{productName}
+		)
+	</insert>
+
+	<insert id="insertDTO" parameterType="OrderDTO">
+		INSERT INTO T_ORDER_LIST(
+				MEMBER_ID,
+				PRODUCT_CODE,
+				PRODUCT_NAME)
+		VALUES(
+				#{memberId},
+				#{productCode},
+				#{productName})
+	</insert>
+
+	<insert id="insertMap" parameterType="Map">
+		INSERT INTO T_ORDER_LIST(
+				MEMBER_ID,
+				PRODUCT_CODE,
+				PRODUCT_NAME)
+		VALUES(
+				#{memberId},
+				#{productCode},
+				#{productName})
+	</insert>
+
+</mapper>
