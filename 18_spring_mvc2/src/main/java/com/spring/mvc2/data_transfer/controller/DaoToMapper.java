@@ -11,6 +11,8 @@ import com.spring.mvc2.data_transfer.dao.OrderDAO;
 import com.spring.mvc2.data_transfer.domain.OrderDTO;
 
 @Controller
+@RequestMapping("dTOm") // 공통되는 경로는 Controller 위에 url 경로를 명시하여 코드의 중복을 줄일 수 있다.
+
 public class DaoToMapper {
 
 	@Autowired

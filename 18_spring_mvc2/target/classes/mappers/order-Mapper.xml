@@ -83,4 +83,145 @@
 				#{productName})
 	</insert>
 
+	<select id="selectAll" resultType="OrderDTO">
+		SELECT 
+				*
+		FROM
+				T_ORDER_LIST
+	</select>
+	
+	<!-- 단일 데이터 전송 예시 -->
+	<select id="select1" resultType="int">
+		SELECT
+				COUNT(*)
+		FROM
+				T_ORDER_LIST
+	</select>
+	
+	<!-- DTO 전송예시 -->
+	<select id="select2" resultType="OrderDTO">
+		<!--  
+	
+		  <![CDATA[]]> 는 SQL 내부에 연산자가 있을 경우 사용한다. ( '>' '<' 연산자가 태그와 혼동되기 때문 )
+		
+		 	- 쿼리 내부에 연산자가 없어도 코드의 통일성을 주기 위해 <![CDATA[]]>를 사용하기도 한다. 
+			
+		-->
+		
+		<![CDATA[
+		SELECT
+				*
+		FROM	
+				T_ORDER_LIST
+		WHERE
+				TOTAL_PRICE > 50000
+		]]>
+	</select>
+	
+	<!-- 
+	
+		# POJO의 변수와 Table의 Colume명 연결 방법
+	
+		- POJO의 변수명과 Table의 컬럼명이 일치할경우는 ( 두단어가 이어지는 경우가 없을때 ) 
+		  스프링 프레임워크에서 테이블명과 POJO의 변수를 연결하여 준다.
+		  
+		- 일반적으로 POJO의 변수는 CamelCase를 사용하고 테이블의 변수는 SnakeCase 사용하여 
+		  두 값이 일치하지 않는 경우는 추가적으로 연결하는 코드를 구현하여야 한다. 
+	
+			[ 예시 ]
+			
+			   [POJO]	   		[Table Colume]
+			productCode	  <>	  PRODUCT_CODE
+			productName	  <>      PRODUCT_NAME
+	
+		- 연결방법은 한가지 방법만 존재하는 것이 아닌 여러가지 방법이 있다.
+	
+			예시 1) mybatis-config파일에 아래의 태그를 추가한다.
+		
+				<settings>
+					<setting name="mapUnderscoreToCamelCase" value="true"/>
+				</settings>
+	
+	
+			예시 2) resultMap태그를 추가로 작성한다.
+		
+				<resultMap id="getProduct" type="000.000.000.Product">  		<< 식별id	, POJO클래스 전체 경로
+		       		<result property="productCode" column="PRODUCT_CODE"/>		<< 변수값   , 컬럼명
+		       		<result property="productName" column="PRODUCT_NAME"/>
+		    	</resultMap>
+		    	
+		    	<select id = ""  resultType="getProduct">						<< 식별id , resultMap의 id
+		    		SELECT
+						PRODUCT_CODE
+						PRODUCT_NAME
+					FROM
+						PRODUCT		
+		    	</select>
+		
+		
+			예시 3) 쿼리문에서 alias를 작성한다.
+			
+				<select id = "" >
+					SELECT
+						PRODUCT_CODE productCode
+						PRODUCT_NAME productName
+					FROM
+						PRODUCT		
+				</select>
+	
+	 -->
+	
+	<resultMap type="Map" id="orderInfo">
+		<result column="MEMBER_ID" 		property="memberId"/>
+		<result column="ORDER_ID" 		property="orderId"/>
+		<result column="PRODUCT_NAME" 	property="productName"/>
+		<result column="TOTAL_PRICE" 	property="totalPrice"/>
+		<result column="TAX"			property="tax"/>
+		<result column="AFTERTAX" 		property="afterTax"/>
+		<result column="NAME"			property="name"/>
+		<result column="EMAIL"			property="email"/>
+		<result column="HP"				property="hp"/>
+	
+	</resultMap>
+	
+	<!-- resultMap 정송 예시 -->
+	<select id="select3" resultMap="orderInfo">
+		
+		SELECT
+				O.MEMBER_ID								AS MEMBER_ID,
+				O.ORDER_ID								AS ORDER_ID,
+				O.PRODUCT_NAME							AS PRODUCT_NAME,
+				O.TOTAL_PRICE							AS TOTAL_PRICE,
+				O.TOTAL_PRICE * 0.1						AS TAX,
+				O.TOTAL_PRICE - (O.TOTAL_PRICE * 0.1)	AS AFTERTAX,
+				M.NAME									AS NAME,
+				M.EMAIL									AS EMAIL,
+				CONCAT(M.HP1, "-", M.HP2, "-", M.HP3)	AS HP
+		FROM
+				T_ORDER_LIST O,
+				T_MEMBER M
+		WHERE
+				O.MEMBER_ID = M.ID AND M.ID="user1"
+	</select>
+	
+	<!-- resultMap 정송 예시 -->
+	<select id="select4" resultType="map"> <!-- map/ Map/ java.util.Map 다 가능 -->
+		
+		SELECT
+				O.MEMBER_ID								AS memberId,
+				O.ORDER_ID								AS orderId,
+				O.PRODUCT_NAME							AS productName,
+				O.TOTAL_PRICE							AS totalPrice,
+				O.TOTAL_PRICE * 0.1						AS tax,
+				O.TOTAL_PRICE - (O.TOTAL_PRICE * 0.1)	AS afterTax,
+				M.NAME									AS name,
+				M.EMAIL									AS email,
+				CONCAT(M.HP1, "-", M.HP2, "-", M.HP3)	AS hp
+		FROM
+				T_ORDER_LIST O,
+				T_MEMBER M
+		WHERE
+				O.MEMBER_ID = M.ID AND M.ID="user1"
+	</select>
+	
 </mapper>
