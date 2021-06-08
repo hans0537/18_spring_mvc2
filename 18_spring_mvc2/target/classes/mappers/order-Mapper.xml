@@ -38,7 +38,7 @@
 			foreach		:		<c:forEach>		/	 	<foreach>
 	-->
 		
-	<insert id="insertOneData" parameterType="String">
+	<insert id="insertOneData" parameterType="String"> 
 		INSERT INTO T_ORDER_LIST(
 				PRODUCT_CODE,
 				PRODUCT_NAME)
@@ -61,7 +61,7 @@
 		)
 	</insert>
 
-	<insert id="insertDTO" parameterType="OrderDTO">
+	<insert id="insertDTO" parameterType="OrderDTO"> <!-- parametType="이 부분을" mybatis-config에서 간략하게 설정할수 있음 -->
 		INSERT INTO T_ORDER_LIST(
 				MEMBER_ID,
 				PRODUCT_CODE,

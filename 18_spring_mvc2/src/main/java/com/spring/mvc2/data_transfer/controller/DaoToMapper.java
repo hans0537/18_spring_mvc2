@@ -26,7 +26,7 @@ public class DaoToMapper {
 		//String productName = "장패드";
 		String productName = "무소음 마우스";
 		orderDAO.insertOne(productName); 
-		return "order/orderList";
+		return "redirect:/mTOd/orderList";
 	}
 	
 	// DAO > Mapper 전송 예시 2) DTO 클래스 전송
